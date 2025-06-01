@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DiraShop - Top Up Game</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #111;
+      color: #fff;
+      margin: 0;
+    }
+
+    header {
+      background-color: #0f62fe;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 2rem;
+      background: #1c1c1c;
+      border-radius: 10px;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      margin-bottom: 1rem;
+      border: none;
+      border-radius: 6px;
+    }
+
+    button {
+      background: #00e676;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .copy-box {
+      background: #333;
+      padding: 10px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .copy-box button {
+      background: #0f62fe;
+      color: white;
+      padding: 6px;
+      font-size: 0.8rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>DiraShop</h1>
+  <p>Top Up Game Cepat & Aman</p>
+</header>
+
+<div class="container">
+  <h2>Form Pemesanan</h2>
+  <form id="orderForm">
+    <label>Nama</label>
+    <input type="text" id="nama" required>
+
+    <label>ID Game</label>
+    <input type="text" id="idgame" required>
+
+    <label>Game</label>
+    <select id="game" required>
+      <option>Mobile Legends</option>
+      <option>Free Fire</option>
+      <option>PUBG Mobile</option>
+    </select>
+
+    <label>Nominal</label>
+    <select id="nominal" required>
+      <option>86 Diamonds - Rp 10.000</option>
+      <option>172 Diamonds - Rp 20.000</option>
+      <option>429 Diamonds - Rp 50.000</option>
+    </select>
+
+    <label>Pembayaran</label>
+    <select id="metode" required>
+      <option>DANA</option>
+      <option>OVO</option>
+      <option>GoPay</option>
+      <option>QRIS</option>
+    </select>
+
+    <button type="submit">Kirim Pesanan</button>
+  </form>
+
+  <div class="payment-methods">
+    <h3>Metode Pembayaran</h3>
+    <div class="copy-box">
+      <span>DANA: 0812xxxxxxx</span>
+      <button onclick="copyText('0812xxxxxxx')">Salin</button>
+    </div>
+    <div class="copy-box">
+      <span>OVO: 0812xxxxxxx</span>
+      <button onclick="copyText('0812xxxxxxx')">Salin</button>
+    </div>
+    <div class="copy-box">
+      <span>GoPay: 0812xxxxxxx</span>
+      <button onclick="copyText('0812xxxxxxx')">Salin</button>
+    </div>
+    <p style="margin-top:1rem">QRIS:</p>
+    <img src="assets/qris.png" alt="QRIS" width="100%">
+  </div>
+</div>
+
+<footer>
+  &copy; 2025 DiraShop
+</footer>
+
+<script>
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    alert('Nomor berhasil disalin!');
+  });
+}
+
+document.getElementById("orderForm").addEventListener("submit", function(e){
+  e.preventDefault();
+
+  const nama = document.getElementById("nama").value;
+  const id = document.getElementById("idgame").value;
+  const game = document.getElementById("game").value;
+  const nominal = document.getElementById("nominal").value;
+  const metode = document.getElementById("metode").value;
+
+  const pesan = `*Pesanan Top Up Game - DiraShop*\n` +
+                `Nama: ${nama}\n` +
+                `ID Game: ${id}\n` +
+                `Game: ${game}\n` +
+                `Nominal: ${nominal}\n` +
+                `Metode Pembayaran: ${metode}`;
+
+  // --- KIRIM KE TELEGRAM ---
+  const token = "TOKEN_BOT_KAMU";        // Ganti dengan token bot kamu
+  const chatId = "CHAT_ID_KAMU";         // Ganti dengan chat ID kamu
+  const url = `https://api.telegram.org/bot${token}/sendMessage`;
+
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: pesan,
+      parse_mode: "Markdown"
+    })
+  }).then(() => {
+    // Setelah telegram berhasil, kirim ke WhatsApp
+    const noWa = "6281234567890"; // Ganti nomor admin
+    const pesanWA = encodeURIComponent(pesan);
+    window.open(`https://wa.me/${noWa}?text=${pesanWA}`, "_blank");
+
+    // Redirect ke halaman terima kasih
+    window.location.href = "thankyou.html";
+  }).catch((err) => {
+    alert("Gagal mengirim ke Telegram: " + err);
+  });
+});
+</script>
+
+</body>
+</html>
